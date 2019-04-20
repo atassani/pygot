@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 
-episode = 's08e01'
+episode = 's08e02'
 tvShow = 'game of thrones'
 fileLock = '/home/osmc/downloading_got'
 
