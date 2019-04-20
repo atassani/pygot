@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 
-episode = 's08e02'
+episode = 's08e01'
 tvShow = 'game of thrones'
 fileLock = '/home/osmc/downloading_got'
 
@@ -93,6 +93,12 @@ for p in html.select('tr.forum_header_border'):
             'seeds'
             )
         torrents.append(t)
+
+if len(torrents) == 0:
+    quit()
+
+torrentsBigger1G = [t for t in torrents if t.size_in_bytes > 1000000000]
+torrents = torrentsBigger1G
 
 if len(torrents) == 0:
     quit()
