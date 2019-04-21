@@ -1,13 +1,55 @@
 # pygot
 
-scrap.py
+Allows to program the download torrents of episodes from **eztv**.
+Meant to be run a a script in a raspbian, a Linux Debian distribution for Rapberry Pi ([raspbmc](https://osmc.tv/)). It is configured to be run by `cron` every 5 minutes and torrents started with `transmission`.
 
-chmod u+x scrap.py
+An email is sent when the episode appears in **eztv** and the magnet link is sent to transmission. A lock file is created to avoid re-running the process.
 
+Working in Python 2.7.
 
-export EDITOR=vi
-crontab -e
+## Usage
 
-*/5 * * * * /usr/bin/python /home/osmc/pygot/scrap.py -c /home/osmc/pygot/config.yaml
+Make the script `scrap.py` executable in python changing the mode:
 
-sudo journalctl -r
+    chmod u+x scrap.py
+
+Edit the crontab file using `vi` with this command:
+
+      EDITOR=vi crontab -e
+
+Introduce the following crontab configuration so that the script runs every 5 minutes.
+
+      */5 * * * * /home/osmc/pygot/scrap.py -c /home/osmc/pygot/config.yaml
+
+To check the log of cron executions, use this command.
+
+      sudo journalctl -r
+
+## configuration
+Create a configuration file that will be passed as a parameter to `scrap.py` with the following content:
+* **fileLock**: File that will be generate when the download is started
+* **episode**: Name of the episode to be downloaded. Has to be changed every time.
+* **tvShow**: Name of the show to download.
+* **sender_email**: The gmail user to be used to send the notifications email
+* **email_password**: The password of the gmail user to be used to send the notification email.
+* **receiver_email**: The gmail user that will receive the notifications.
+
+Example:
+```
+global:
+  fileLock: '/home/osmc/downloading_got'
+
+torrent:
+  episode: 's08e01'
+  tvShow: 'game of thrones'
+
+email:
+  email_password: Apassword
+  sender_email: my@gmail.com
+  receiver_email: to@gmail.com
+```
+
+## Notes
+Requirements, using `pip`, have not been updated just got from
+
+    pip freeze > requirements.txt
