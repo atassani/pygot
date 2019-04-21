@@ -10,32 +10,6 @@ episode = 's08e02'
 tvShow = 'game of thrones'
 fileLock = '/home/osmc/downloading_got'
 
-# Send email notification
-port = 587
-smtp_server = "smtp.gmail.com"
-email_password = os.environ.get('EMAIL_PASSWORD', None)
-sender_email = os.environ.get('SENDER_EMAIL', None)
-receiver_email = os.environ.get('RECEIVER_EMAIL', None)
-message = """\
-Subject: Episode %s started
-
-The episode is available and has been sent to Transmission.""" % (episode)
-
-context = ssl.create_default_context()
-try:
-    server = smtplib.SMTP(smtp_server,port)
-    server.ehlo() # Can be omitted
-    server.starttls() # Secure the connection
-    server.ehlo() # Can be omitted
-    server.login(sender_email, email_password)
-    server.sendmail(sender_email, receiver_email, message)
-except Exception as e:
-    # Print any error messages to stdout
-    print(e)
-finally:
-    server.quit()
-quit()
-
 def simple_get(url):
     """
     Attempts to get the content at `url` by making an HTTP GET request.
@@ -137,4 +111,35 @@ sortedTorrents = sorted(torrents, reverse=True)
 # Create empty file to avoid relaunch
 open(fileLock, 'a').close()
 
-os.system('transmission-remote --add ' + sortedTorrents[0].magnet)
+theTorrent = sortedTorrents[0]
+os.system('transmission-remote --add ' + theTorrent.magnet)
+
+# Send email notification
+port = 587
+smtp_server = "smtp.gmail.com"
+email_password = os.environ.get('EMAIL_PASSWORD', None)
+sender_email = os.environ.get('SENDER_EMAIL', None)
+receiver_email = os.environ.get('RECEIVER_EMAIL', None)
+message = """\
+Subject: Episode %s started
+
+The episode is available and has been sent to Transmission.
+Title = %s
+Seeds = %s
+Size  = %s
+Age   = %s
+""" % (episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age)
+
+context = ssl.create_default_context()
+try:
+    server = smtplib.SMTP(smtp_server,port)
+    server.ehlo() # Can be omitted
+    server.starttls() # Secure the connection
+    server.ehlo() # Can be omitted
+    server.login(sender_email, email_password)
+    server.sendmail(sender_email, receiver_email, message)
+except Exception as e:
+    # Print any error messages to stdout
+    print(e)
+finally:
+    server.quit()
