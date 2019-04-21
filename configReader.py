@@ -32,7 +32,7 @@ def readConfig():
         sys.exit(2)
 
     stream = open(configFile, 'r')
-    configYaml = yaml.load(stream, Loader=yaml.FullLoader)
+    configYaml = yaml.load(stream, Loader=yaml.SafeLoader)
 
     return Config(
         configYaml.get('global').get('fileLock'),
