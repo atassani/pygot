@@ -4,6 +4,6 @@
 export EDITOR=vi
 crontab -e
 
-*/5 * * * * /usr/bin/python /home/osmc/pygot/scrap.py
+*/5 * * * * EMAIL_PASSWORD=email_password SENDER_EMAIL=sender_email SENDER_PASSWORD=sender_password /usr/bin/python /home/osmc/pygot/scrap.py
 
 sudo journalctl -r
