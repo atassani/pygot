@@ -4,10 +4,7 @@ from fileReader import simple_get
 from bs4 import BeautifulSoup
 from torrent import Torrent
 from emailSender import sendEmail
-from yaml import load, FullLoader
 import os, re
-import sys
-import getopt
 from configReader import readConfig
 
 def main():

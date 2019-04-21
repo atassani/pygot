@@ -1,6 +1,6 @@
 import sys
 import getopt
-from yaml import load, FullLoader
+import yaml
 
 class Config:
     def __init__(self, fileLock, episode, tvShow, sender_email, email_password, receiver_email):
@@ -32,7 +32,7 @@ def readConfig():
         sys.exit(2)
 
     stream = open(configFile, 'r')
-    configYaml = load(stream, Loader=FullLoader)
+    configYaml = yaml.load(stream, Loader=yaml.FullLoader)
 
     return Config(
         configYaml.get('global').get('fileLock'),
