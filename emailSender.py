@@ -1,4 +1,6 @@
 import smtplib, ssl
+import socket
+import datetime
 
 def sendEmail(config, theTorrent):
     # Send email notification
@@ -14,7 +16,10 @@ def sendEmail(config, theTorrent):
     Size  = %s
     Age   = %s
     File  = %s
-    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file)
+
+    Sent from %s at %s
+    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
+            socket.gethostname(), datetime.datetime.now())
 
     context = ssl.create_default_context()
     try:

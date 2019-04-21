@@ -51,7 +51,7 @@ def main():
     sortedTorrents = sorted(torrents, reverse=True)
     theTorrent = sortedTorrents[0]
 
-    print('\n'.join(map(str, sortedTorrents)))
+    #print('\n'.join(map(str, sortedTorrents)))
 
     sendEmail(config, theTorrent)
 
