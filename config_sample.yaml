@@ -1,0 +1,11 @@
+global:
+  fileLock: '/home/osmc/downloading_got'
+
+torrent:
+  episode: 's08e01'
+  tvShow: 'game of thrones'
+
+email:
+  email_password: Apassword
+  sender_email: my@gmail.com
+  receiver_email: to@gmail.com
