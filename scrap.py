@@ -3,18 +3,60 @@
 from fileReader import simple_get
 from bs4 import BeautifulSoup
 from torrent import Torrent
-from emailSender import sendEmail
+from emailSender import sendStartedEmail, sendFinishedEmail
 import os, re
 from configReader import readConfig
+from datetime import date
+import shutil
 
 def main():
     config = readConfig()
+    checkMondayOrQuit()
+    if isDownloadingStarted(config):
+        file = getDownloadingFile(config)
+        if isDownloadingFinished(config, file):
+            moveFileToFinalDestination(config, file)
+            removeDownloadingLock()
+            sendFinishedEmail()
+            updateDownloadChapterInConfig(config)
+            os.system('ID=`transmission-remote -l | grep ' + file
+            + ' | cut -c 1-4` && transmission-remote -t $ID -r')
+        quit()
+    theTorrent = getTorrentIfAny(config)
+    sendStartedEmail(config, theTorrent)
+    createLockFile(config, theTorrent)
+    addToTransmission(theTorrent)
 
-    # Check if already downloading
-    exists = os.path.isfile(config.fileLock)
-    if exists:
+def addToTransmission(torrent):
+    os.system('transmission-remote --add ' + torrent.magnet)
+
+def checkMondayOrQuit():
+    if date.today().weekday() != 0:
         quit()
 
+def isDownloadingStarted(config):
+    exists = os.path.isfile(config.fileLock)
+    return exists
+
+def getDownloadingFile(config):
+    with open(config.fileLock, 'r') as f:
+        data = f.read()
+        return data
+
+def isDownloadingFinished(config, file):
+    return os.path.isfile(config.downloadedFolder + '/' + file)
+
+def moveFileToFinalDestination(config, file):
+    shutil.move(os.path.join(downloadedFolder, file), os.path.join(destinationFolder, file))
+
+def removeDownloadingLock(config):
+    os.remove(config.fileLock)
+
+def updateDownloadChapterInConfig(config):
+    config.incEpisode()
+    config.write()
+
+def getTorrentIfAny(config):
     eztvSearchString = (config.tvShow + ' ' + config.episode).replace(' ', '_').lower()
     raw_html = simple_get('https://eztv.io/search/' + eztvSearchString)
     html = BeautifulSoup(raw_html, 'html.parser')
@@ -50,12 +92,11 @@ def main():
 
     #print('\n'.join(map(str, sortedTorrents)))
 
-    sendEmail(config, theTorrent)
+    return theTorrent
 
-    # Create empty file to avoid relaunch
-    open(config.fileLock, 'a').close()
-
-    os.system('transmission-remote --add ' + theTorrent.magnet)
+def createLockFile(config, theTorrent):
+    with open(config.fileLock, 'a') as file:
+        file.write(theTorrent.file)
 
 if __name__ == "__main__":
    main()

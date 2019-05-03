@@ -1,26 +1,11 @@
 import smtplib, ssl
 import socket
 import datetime
+from subprocess import check_output
 
-def sendEmail(config, theTorrent):
-    # Send email notification
+def __sendEmail__(config, theTorrent, message):
     port = 587
     smtp_server = "smtp.gmail.com"
-    message = """\
-    Subject: Episode %s started
-
-
-    The episode is available and has been sent to Transmission.
-    Title = %s
-    Seeds = %s
-    Size  = %s
-    Age   = %s
-    File  = %s
-
-    Sent from %s at %s
-    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
-            socket.gethostname(), datetime.datetime.now())
-
     context = ssl.create_default_context()
     try:
         server = smtplib.SMTP(smtp_server, port)
@@ -34,3 +19,41 @@ def sendEmail(config, theTorrent):
         print(e)
     finally:
         server.quit()
+
+def sendStartedEmail(config, theTorrent):
+    dfh = check_output(['df', '-h'])
+    message = """\
+    Subject: Episode %s started
+
+
+    The episode is available and has been sent to Transmission.
+    Title = %s
+    Seeds = %s
+    Size  = %s
+    Age   = %s
+    File  = %s
+
+    $ df -h
+    %s
+
+    Sent from %s at %s
+    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
+            dfh, socket.gethostname(), datetime.datetime.now())
+    __sendEmail__(config, theTorrent, message)
+
+def sendFinishedEmail(config, theTorrent):
+    message = """\
+    Subject: Episode %s finished
+
+
+    The episode has been downloaded and is available.
+    Title = %s
+    Seeds = %s
+    Size  = %s
+    Age   = %s
+    File  = %s
+
+    Sent from %s at %s
+    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
+            socket.gethostname(), datetime.datetime.now())
+    __sendEmail__(config, theTorrent, message)
