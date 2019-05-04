@@ -36,7 +36,7 @@ class Config:
             }
         }
         with open(self.configFile, 'w') as file:
-            yaml.dump(yamlContent, file)
+            yaml.dump(yamlContent, file, default_flow_style=False)
 
 
 def readConfig():
