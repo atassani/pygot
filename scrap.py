@@ -29,10 +29,10 @@ def main():
     addToTransmission(theTorrent)
 
 def addToTransmission(torrent):
-    os.system('transmission-remote --add '  torrent.magnet)
+    os.system('transmission-remote --add ' + torrent.magnet)
 
 def removeFromTransmission(file):
-    os.system('ID=`transmission-remote -l | grep -F '  file
+    os.system('ID=`transmission-remote -l | grep -F ' + file +
          ' | cut -c 1-4` && transmission-remote -t $ID -r')
 
 def checkMondayOrQuit():
@@ -49,7 +49,7 @@ def getDownloadingFile(config):
         return data
 
 def isDownloadingFinished(config, file):
-    return os.path.isfile(config.downloadedFolder  '/'  file)
+    return os.path.isfile(config.downloadedFolder + '/' + file)
 
 def moveFileToFinalDestination(config, file):
     shutil.move(os.path.join(config.downloadedFolder, file), os.path.join(config.destinationFolder, file))
@@ -62,11 +62,11 @@ def updateDownloadChapterInConfig(config):
     config.write()
 
 def getTorrentIfAny(config):
-    eztvSearchString = (config.tvShow  ' '  config.episode).replace(' ', '_').lower()
-    raw_html = simple_get('https://eztv.io/search/'  eztvSearchString)
+    eztvSearchString = (config.tvShow + ' ' + config.episode).replace(' ', '_').lower()
+    raw_html = simple_get('https://eztv.io/search/' + eztvSearchString)
     html = BeautifulSoup(raw_html, 'html.parser')
     torrents = []
-    expr = re.compile(config.tvShow  ' '  config.episode, re.I)
+    expr = re.compile(config.tvShow + ' ' + config.episode, re.I)
     for p in html.select('tr.forum_header_border'):
         row = p.select('td')
         title = row[1].text.strip()
