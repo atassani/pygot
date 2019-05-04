@@ -54,6 +54,10 @@ Requirements, using `pip`, have not been updated just got from
 
     pip freeze > requirements.txt
 
+Dependencies
+
+    sudo apt-get install python-libtorrent
+
 The configuration of Transmission (torrent client) is in
 
     ~/.config/transmission-daemon/settings.json
