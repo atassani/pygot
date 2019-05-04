@@ -16,11 +16,10 @@ def main():
         file = getDownloadingFile(config)
         if isDownloadingFinished(config, file):
             moveFileToFinalDestination(config, file)
-            removeDownloadingLock()
-            sendFinishedEmail()
+            sendFinishedEmail(config, file)
+            removeDownloadingLock(config)
             updateDownloadChapterInConfig(config)
-            os.system('ID=`transmission-remote -l | grep ' + file
-            + ' | cut -c 1-4` && transmission-remote -t $ID -r')
+            removeFromTransmission(file)
         quit()
     theTorrent = getTorrentIfAny(config)
     sendStartedEmail(config, theTorrent)
@@ -29,6 +28,10 @@ def main():
 
 def addToTransmission(torrent):
     os.system('transmission-remote --add ' + torrent.magnet)
+
+def removeFromTransmission(file):
+    os.system('ID=`transmission-remote -l | grep -F ' + file
+        + ' | cut -c 1-4` && transmission-remote -t $ID -r')
 
 def checkMondayOrQuit():
     if date.today().weekday() != 0:
@@ -47,7 +50,7 @@ def isDownloadingFinished(config, file):
     return os.path.isfile(config.downloadedFolder + '/' + file)
 
 def moveFileToFinalDestination(config, file):
-    shutil.move(os.path.join(downloadedFolder, file), os.path.join(destinationFolder, file))
+    shutil.move(os.path.join(config.downloadedFolder, file), os.path.join(config.destinationFolder, file))
 
 def removeDownloadingLock(config):
     os.remove(config.fileLock)

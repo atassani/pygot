@@ -3,7 +3,7 @@ import socket
 import datetime
 from subprocess import check_output
 
-def __sendEmail__(config, theTorrent, message):
+def __sendEmail__(config, message):
     port = 587
     smtp_server = "smtp.gmail.com"
     context = ssl.create_default_context()
@@ -39,21 +39,16 @@ def sendStartedEmail(config, theTorrent):
     Sent from %s at %s
     """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
             dfh, socket.gethostname(), datetime.datetime.now())
-    __sendEmail__(config, theTorrent, message)
+    __sendEmail__(config, message)
 
-def sendFinishedEmail(config, theTorrent):
+def sendFinishedEmail(config, file):
     message = """\
-    Subject: Episode %s finished
+    Subject: Episode finished
 
 
     The episode has been downloaded and is available.
-    Title = %s
-    Seeds = %s
-    Size  = %s
-    Age   = %s
     File  = %s
 
     Sent from %s at %s
-    """ % (config.episode, theTorrent.title, theTorrent.seeds, theTorrent.size, theTorrent.age, theTorrent.file,
-            socket.gethostname(), datetime.datetime.now())
-    __sendEmail__(config, theTorrent, message)
+    """ % (file, socket.gethostname(), datetime.datetime.now())
+    __sendEmail__(config, message)

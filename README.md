@@ -36,20 +36,27 @@ Create a configuration file that will be passed as a parameter to `scrap.py` wit
 
 Example:
 ```
-global:
-  fileLock: '/home/osmc/downloading_got'
-
-torrent:
-  episode: 's08e01'
-  tvShow: 'game of thrones'
-
 email:
   email_password: Apassword
   sender_email: my@gmail.com
   receiver_email: to@gmail.com
+global:
+  fileLock: /home/osmc/downloading_got
+  downloadedFolder: /home/osmc/download
+  destinationFolder: /home/osmc/TV Shows/Game of Thrones/Season 8
+torrent:
+  episode: s08e01
+  tvShow: game of thrones
 ```
 
 ## Notes
 Requirements, using `pip`, have not been updated just got from
 
     pip freeze > requirements.txt
+
+The configuration of Transmission (torrent client) is in
+
+    ~/.config/transmission-daemon/settings.json
+
+It can be reloaded with
+    killall -HUP transmission-daemon
