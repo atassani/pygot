@@ -6,6 +6,7 @@ global:
   fileLock: /home/osmc/downloading_got
   downloadedFolder: /home/osmc/download
   destinationFolder: /home/osmc/TV Shows/Game of Thrones/Season 8
+  onlyMondays: true
 torrent:
   episode: s08e01
   tvShow: game of thrones

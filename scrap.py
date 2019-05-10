@@ -13,7 +13,7 @@ import time
 
 def main():
     config = readConfig()
-    checkMondayOrQuit()
+    checkMondayOrQuit(config)
     if isDownloadingStarted(config):
         file = getDownloadingFile(config)
         if isDownloadingFinished(config, file):
@@ -22,7 +22,8 @@ def main():
             removeDownloadingLock(config)
             updateDownloadChapterInConfig(config)
             removeFromTransmission(file)
-        quit()
+	else:
+            quit()
     theTorrent = getTorrentIfAny(config)
     sendStartedEmail(config, theTorrent)
     createLockFile(config, theTorrent)
@@ -35,8 +36,8 @@ def removeFromTransmission(file):
     os.system('ID=`transmission-remote -l | grep -F ' + file +
          ' | cut -c 1-4` && transmission-remote -t $ID -r')
 
-def checkMondayOrQuit():
-    if date.today().weekday() != 0:
+def checkMondayOrQuit(config):
+    if (bool(config.onlyMondays)) and date.today().weekday() != 0:
         quit()
 
 def isDownloadingStarted(config):
@@ -62,7 +63,7 @@ def updateDownloadChapterInConfig(config):
     config.write()
 
 def getTorrentIfAny(config):
-    eztvSearchString = (config.tvShow + ' ' + config.episode).replace(' ', '_').lower()
+    eztvSearchString = (config.tvShow).replace(' ', '_').lower()
     raw_html = simple_get('https://eztv.io/search/' + eztvSearchString)
     html = BeautifulSoup(raw_html, 'html.parser')
     torrents = []
@@ -71,14 +72,12 @@ def getTorrentIfAny(config):
         row = p.select('td')
         title = row[1].text.strip()
         magnet = row[2].find('a', 'magnet').get('href')
-        filename = getFilenameFromMagnet(magnet)
         if (bool(expr.match(title))):
             t = Torrent(
                 config.episode,
                 title,
                 row[3].text,
                 magnet,
-                filename,
                 row[4].text,
                 int(row[5].text.replace(',', ''))
                 )
@@ -98,6 +97,8 @@ def getTorrentIfAny(config):
     theTorrent = sortedTorrents[0]
 
     #print('\n'.join(map(str, sortedTorrents)))
+    filename = getFilenameFromMagnet(theTorrent.magnet)
+    theTorrent.setFile(filename)
 
     return theTorrent
 

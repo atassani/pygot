@@ -3,12 +3,13 @@ import getopt
 import yaml
 
 class Config:
-    def __init__(self, configFile, fileLock, downloadedFolder, destinationFolder, episode, tvShow,
+    def __init__(self, configFile, fileLock, downloadedFolder, destinationFolder, onlyMondays, episode, tvShow,
                     sender_email, email_password, receiver_email):
         self.configFile         = configFile
         self.fileLock           = fileLock
         self.downloadedFolder   = downloadedFolder
         self.destinationFolder  = destinationFolder
+        self.onlyMondays        = onlyMondays
         self.episode            = episode
         self.tvShow             = tvShow
         self.sender_email       = sender_email
@@ -23,7 +24,8 @@ class Config:
             'global': {
                 'destinationFolder': self.destinationFolder,
                 'downloadedFolder': self.downloadedFolder,
-                'fileLock': self.fileLock
+                'fileLock': self.fileLock,
+                'onlyMondays': self.onlyMondays
             },
             'torrent': {
                 'episode': self.episode,
@@ -67,6 +69,7 @@ def readConfig():
         configYaml.get('global').get('fileLock'),
         configYaml.get('global').get('downloadedFolder'),
         configYaml.get('global').get('destinationFolder'),
+        configYaml.get('global').get('onlyMondays'),
         configYaml.get('torrent').get('episode'),
         configYaml.get('torrent').get('tvShow'),
         configYaml.get('email').get('sender_email'),
