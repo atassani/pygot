@@ -19,7 +19,7 @@ Edit the crontab file using `vi` with this command:
 
 Introduce the following crontab configuration so that the script runs every 5 minutes.
 
-      */5 * * * * /home/osmc/pygot/scrap.py -c /home/osmc/pygot/config.yaml
+      */5 * * * * /home/osmc/pygot/scrap.py -c /home/osmc/pygot/config.yaml >/dev/null 2>&1
 
 To check the log of cron executions, use this command.
 
