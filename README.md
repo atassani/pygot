@@ -64,3 +64,5 @@ The configuration of Transmission (torrent client) is in
 
 It can be reloaded with
     killall -HUP transmission-daemon
+
+Dependencies from dependabot updated, but not tested, as it is not in use anymore.
