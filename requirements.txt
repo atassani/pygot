@@ -2,7 +2,7 @@ beautifulsoup4==4.5.3
 chardet==2.3.0
 dnspython==1.15.0
 pexpect==4.2.1
-Pillow==9.0.1
+Pillow==9.3.0
 ptyprocess==0.5.1
 pycrypto==2.6.1
 pygobject==3.22.0
